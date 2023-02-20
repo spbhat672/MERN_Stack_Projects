@@ -1,10 +1,7 @@
-import React, { useState,useRef } from 'react';
-import { Table, Input, Button, Select } from 'antd';
-import Highlighter from 'react-highlight-words';
+import React, { useRef } from 'react';
+import { Table, Input, Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { Space } from 'antd';
-
-const { Option } = Select;
 
 const data = [
   {
@@ -38,9 +35,6 @@ const data = [
 ];
 
 function Home() {
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
-  const [selectedGender, setSelectedGender] = useState('');
   const searchInputRef = useRef(null);
 
 
@@ -80,27 +74,7 @@ function Home() {
         setTimeout(() => searchInputRef.current.select(), 100);
       }
     },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter searchWords={[searchText]} autoEscape textToHighlight={text} />
-      ) : (
-        text
-      ),
   });
-  
-
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  };
-
-  const handleReset = (clearFilters) => {
-    clearFilters();
-    setSearchText('');
-    setSearchedColumn('');
-    setSelectedGender('');
-  };
 
   const columns = [
     {
@@ -110,12 +84,6 @@ function Home() {
       ...getColumnSearchProps('name'),
       sorter: (a, b) => a.name.localeCompare(b.name),
       sortDirections: ['ascend', 'descend'],
-      render: (text, record) =>
-        searchedColumn === 'name' ? (
-          <Highlighter searchWords={[searchText]} autoEscape textToHighlight={text} />
-        ) : (
-          text
-        ),
     },
     {
       title: 'Age',
@@ -124,12 +92,6 @@ function Home() {
       ...getColumnSearchProps('age'),
       sorter: (a, b) => a.age - b.age,
       sortDirections: ['descend', 'ascend'],
-      render: (text) =>
-        searchedColumn === 'age' ? (
-          <Highlighter searchWords={[searchText]} autoEscape textToHighlight={text.toString()} />
-        ) : (
-          text
-        ),
     },
     {
       title: 'Gender',
@@ -143,17 +105,8 @@ function Home() {
       sorter: (a, b) => a.gender.localeCompare(b.gender),
       sortDirections: ['ascend', 'descend'],
       filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-      render: (text) =>
-        searchedColumn === 'gender' ? (
-          <Highlighter searchWords={[searchText]} autoEscape textToHighlight={text} />
-        ) : (
-          text
-        ),
     },
   ];
-  
-  
-  
 
 return (
   <Table
