@@ -1,41 +1,40 @@
-import React, { useRef } from 'react';
+import React, { useRef,useState,useEffect } from 'react';
 import { Table, Input, Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { Space } from 'antd';
-
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    gender: 'male',
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    gender: 'male',
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    gender: 'male',
-  },
-  {
-    key: '4',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    gender: 'female',
-  },
-];
+import axios from 'axios';
 
 function Home() {
   const searchInputRef = useRef(null);
+  const [userData,setUserData] = useState([]);
+  const [genderData,setGenderData] = useState([]);
+
+  // fetch all the users
+  const getAllUsers = async ()=>{
+    try{         
+         const {data} = await axios.get('http://localhost:8080/api/users/get-user');
+         setUserData(data); 
+         console.log(data);        
+    }catch(err){      
+      console.log(err);
+    }
+  }
+
+   // fetch the genders
+   const getGenderData = async ()=>{
+    try{         
+         const {data} = await axios.get('http://localhost:8080/api/genders/get-gender');
+         setGenderData(data); 
+         console.log(data);        
+    }catch(err){      
+      console.log(err);
+    }
+  }
+
+  useEffect(()=>{
+    getAllUsers();
+    getGenderData();
+  },[])
 
 
   const getColumnSearchProps = (dataIndex, customFilterIcon) => ({
@@ -78,6 +77,12 @@ function Home() {
 
   const columns = [
     {
+      title: 'Image',
+      dataIndex: 'photocopy',
+      key: 'photocopy',
+      render:(image,record)=><img src={image} alt={record.name} height="60" width="60"/>,
+    },
+    {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
@@ -86,32 +91,37 @@ function Home() {
       sortDirections: ['ascend', 'descend'],
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-      ...getColumnSearchProps('age'),
-      sorter: (a, b) => a.age - b.age,
+      title: 'Contact No.',
+      dataIndex: 'contact',
+      key: 'contact',
+      ...getColumnSearchProps('contact'),
+      sorter: (a, b) => a.contact - b.contact,
       sortDirections: ['descend', 'ascend'],
     },
     {
       title: 'Gender',
       dataIndex: 'gender',
       key: 'gender',
-      filters: [
-        { text: 'Male', value: 'male' },
-        { text: 'Female', value: 'female' },
-      ],
+      filters: genderData,
       onFilter: (value, record) => record.gender.indexOf(value) === 0,
       sorter: (a, b) => a.gender.localeCompare(b.gender),
       sortDirections: ['ascend', 'descend'],
       filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address',
+      ...getColumnSearchProps('address'),
+      sorter: (a, b) => a.address.localeCompare(b.address),
+      sortDirections: ['ascend', 'descend'],
     },
   ];
 
 return (
   <Table
     columns={columns}
-    dataSource={data}
+    dataSource={userData}
     onRow={(record, rowIndex) => {
       return {
         onClick: () => {
