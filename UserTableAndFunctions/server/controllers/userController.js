@@ -17,8 +17,8 @@ const addUserController = async (req,res)=>{
     await newUser.save();
     res.status(201).send("User created successfully");
    }catch(error){
-    res.status(400).send("error",error);
     console.log(error);
+    res.status(400).send("error:-"+ error);    
    }
 }
 

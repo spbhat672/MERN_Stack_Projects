@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
     },
     photocopy:{
         type:String,
-        required:true
+        required:false
     },
     contact:{
         type:Number,
