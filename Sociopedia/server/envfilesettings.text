@@ -1,0 +1,3 @@
+MONGO_URL = 'mongodb+srv://santoshbhat672:santu672@cluster0.vroaipd.mongodb.net/?retryWrites=true&w=majority'
+JWT_SECRET = 'somesuperhardstringtoguess'
+PORT = 3001
